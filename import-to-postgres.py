@@ -4,7 +4,7 @@ import argparse
 import logging
 import plistlib
 
-import psycopg2
+import psycopg
 
 DEFAULT_LIBRARY_FILE_LOCATION = '/Users/stephan/Music/iTunes/iTunes Music Library.xml'
 DEFAULT_DATABASE_NAME = 'music'
@@ -328,7 +328,7 @@ def slugify(name):
 
 
 def open_db(name, port, user, password):
-    conn = psycopg2.connect(host="localhost", port=port, database=name, user=user, password=password)
+    conn = psycopg.connect(f"host=localhost dbname={name} user={user} port={port} password={password}")
     cur = conn.cursor()
     return conn, cur
 

@@ -13,7 +13,7 @@ import sys
 import time
 from urllib.parse import unquote
 
-import psycopg2
+import psycopg
 
 DEFAULT_ITUNES_MUSIC_FOLDER = os.path.expanduser('~/Music/iTunes/iTunes Music/')
 DEFAULT_PLAYLIST_NAME = 'Top 2019'
@@ -77,7 +77,7 @@ def export_as_m3u(db_name, password, playlist_name, port, username, view_name):
 
 
 def fetch_m3u_tracks(db_name, password, port, username, view_name):
-    conn = psycopg2.connect(host="localhost", database=db_name, port=port, user=username, password=password)
+    conn = psycopg.connect(f"host=localhost dbname={db_name} user={username} port={port} password={password}")
     cur = conn.cursor()
 
     cur.execute("SELECT name,"
@@ -106,7 +106,7 @@ def export_as_xml(db_name, password, playlist_name, port, username, view_name):
                                           ('Application Version', '12.1.2.27'),
                                           ('Music Folder', 'file:///Users/stephan/Music/iTunes/iTunes%20Media/'),
                                           ('Library Persistent ID', '23D7636E9EB97DA0')])
-    conn = psycopg2.connect(host="localhost", database=db_name, port=port, user=username, password=password)
+    conn = psycopg.connect(f"host=localhost dbname={db_name} user={username} port={port} password={password}")
     cur = conn.cursor()
 
     cur.execute("SELECT track_id,"
