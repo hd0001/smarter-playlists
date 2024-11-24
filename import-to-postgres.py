@@ -27,31 +27,34 @@ def main(arg_list=None):
     username = args.username
     password = args.password
 
-    logging.warning("Connecting to database %s on port %s with username %s. Importing data to schema %s",
+    logger = logging.getLogger("SP")
+    logging.basicConfig(level=logging.INFO)
+
+    logger.info("Connecting to database %s on port %s with username %s. Importing data to schema %s",
                     db_name, port, username, schema_name)
 
-    logging.warning("Parsing library file at location: %s", library_xml.name)
+    logger.info("Parsing library file at location: %s", library_xml.name)
 
     library = plistlib.load(library_xml)
 
-    logging.warning("Extracting track data from library file...")
+    logger.info("Extracting track data from library file...")
     tracks_table, tracks = process_tracks(library)
 
     # Import data 'as-is' to postgres
     conn, cur = open_db(db_name, port, username, password)
-    logging.warning("Importing data into temp schema...")
+    logger.info("Importing data into temp schema...")
     import_itunes_data(cur, tracks, tracks_table)
     close_db(conn, cur)
 
     # Create normalised data structure
     conn, cur = open_db(db_name, port, username, password)
-    logging.warning("Creating the new tables...")
+    logger.info("Creating the new tables...")
     create_normalised_tables(cur, schema_name)
     close_db(conn, cur)
 
     # Migrate data over to new structure
     conn, cur = open_db(db_name, port, username, password)
-    logging.warning("Migrating data to new tables...")
+    logger.info("Migrating data to new tables...")
     normalise_data(cur, schema_name)
     close_db(conn, cur)
 
